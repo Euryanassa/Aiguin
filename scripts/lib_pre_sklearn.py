@@ -42,21 +42,95 @@ class ClsLibPreprocessing:
 
     def encode_categorical_columns(self):
         """
-        This function encodes categorical columns in a Pandas DataFrame.
+        This function converts categorical columns in a Pandas DataFrame into categories.
 
         Args:
-        df: The DataFrame to encode.
+            df: The DataFrame to convert the columns from.
 
         Returns:
-        A encoded DataFrame.
+            A DataFrame with the categorical columns converted to categories.
         """
 
-        # Check for categorical columns
+        # Get the categorical columns
         categorical_columns = self.data.select_dtypes(include=['object']).columns
 
-        # Encode the categorical columns
+        # Convert the categorical columns to categories
         for column in categorical_columns:
-            encoder = OneHotEncoder()
-            self.data[column] = encoder.fit_transform(self.data[column].values.reshape(-1, 1)).toarray()
+            self.data[column] = pd.Categorical(self.data[column])
+
+
 
    
+    def check_dataframe_info(self):
+        """
+        This function checks a DataFrame for empty values and duplicate rows, and creates an information table out of it.
+
+        Args:
+            df: The DataFrame to check.
+
+        Returns:
+            A DataFrame with information about the empty values and duplicate rows.
+        """
+
+        # Check for empty values
+        empty_values_df = self.data.isnull().sum().to_frame(name='Empty Values')
+        empty_values_df.index.name = 'Column'
+
+        return empty_values_df
+
+    def drop_duplicates(self):
+        """
+        This function drops duplicates from a DataFrame.
+
+        Args:
+            df: The DataFrame to drop duplicates from.
+
+        Returns:
+            A DataFrame without duplicates.
+        """
+
+        df_without_duplicates = self.data.drop_duplicates()
+
+        return df_without_duplicates
+
+    def week_month_feature_columns(self, date_column = 'date'):
+        """
+        This function creates feature columns of day of week and month of the year from a Pandas DataFrame.
+
+        Args:
+            df: The Pandas DataFrame to create the feature columns from.
+
+        Returns:
+            A DataFrame with the new feature columns.
+        """
+
+        # Get the day of week column
+        day_of_week_column = self.data[date_column].dt.weekday
+
+        # Create a categorical day of week column
+        self.data['day_of_week'] = pd.Categorical(day_of_week_column)
+
+        # Get the month column
+        month_column = self.data[date_column].dt.month
+
+        # Create a categorical month column
+        self.data['month'] = pd.Categorical(month_column)
+
+    def is_date_column(df, column_name):
+        """
+        This function checks if a column in a Pandas DataFrame is a date.
+
+        Args:
+            df: The Pandas DataFrame to check the column from.
+            column_name: The name of the column to check.
+
+        Returns:
+            True if the column is a date, False otherwise.
+        """
+
+        # Check if the column is of type datetime
+        if pd.api.types.is_datetime_dtype(df[column_name]):
+            return True
+        else:
+            return False
+            
