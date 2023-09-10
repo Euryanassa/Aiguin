@@ -55,8 +55,20 @@ class ClsLibPreprocessing:
         categorical_columns = self.data.select_dtypes(include=['object']).columns
 
         # Convert the categorical columns to categories
+        #for column in categorical_columns:
+        #    self.data[column] = pd.Categorical(self.data[column])
+
         for column in categorical_columns:
-            self.data[column] = pd.Categorical(self.data[column])
+            if column == 'current_date':
+                continue
+            # Get the unique values in the column
+            unique_values = self.data[column].unique()
+
+            # Create a dictionary to map the unique values to labels
+            label_map = {value: i for i, value in enumerate(unique_values)}
+
+            # Label the values in the column
+            self.data[column] = self.data[column].map(label_map)
 
 
 
