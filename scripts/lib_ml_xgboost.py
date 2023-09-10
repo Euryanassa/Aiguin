@@ -18,7 +18,7 @@ class ClsLibMlXGBoostClassifier():
         self.train_df_y = self.train_df[self.target_column]
         self.test_df_X = self.test_df.loc[:, self.test_df.columns != 'target_column']
         self.test_df_y = self.test_df[self.target_column]
-        self.eval_metric = 'logloss'
+        self.eval_metric = ['logloss','rmse','rmsle']
         self.eval_results = None
         self.early_stopping_rounds = 10
         self.params_grid = {
