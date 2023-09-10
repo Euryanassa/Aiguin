@@ -2,7 +2,7 @@ import pandas as pd
 import datetime
 
 
-def read_pandas_file(file_path, target_column, add_current_date = False, header = 0, index_col = 0):
+def read_pandas_file(file_path, target_column, add_current_date = False, header = 0, index_col = 0, app_mode = True):
     """
     This function reads a Pandas file, checks if the columns and indexes exist, and adds a current date column with the current date in the `MM.DD.YYYY hh:mm:ss` format if desired.
 
@@ -15,7 +15,7 @@ def read_pandas_file(file_path, target_column, add_current_date = False, header 
     """
 
     # Get the file extension
-    file_extension = file_path.split('.')[-1]
+    file_extension = file_path.name.split('.')[-1] if app_mode == True else file_path.split('.')[-1]
 
     # Read the file with the appropriate Pandas function
     if file_extension == 'csv':
